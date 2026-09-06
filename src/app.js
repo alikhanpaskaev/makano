@@ -79,7 +79,8 @@
 
     if (!form.reportValidity()) return;
 
-    if (cfg.formspree) send(new FormData(form));
+    if (cfg.relay) sendToRelay(new FormData(form));
+    else if (cfg.formspree) send(new FormData(form));
   });
 
   // Каждый мессенджер — своя кнопка: человек выбирает, чем ему удобнее.
@@ -92,6 +93,55 @@
       openMessenger(button.dataset.channel, new FormData(form));
     });
   });
+
+  // Собирает заполненные поля в подписанный список; поле-ловушка "website"
+  // отдаётся отдельно — ретранслятор молча отбрасывает такие заявки.
+  function collect(data) {
+    var fields = [];
+    var trap = "";
+
+    data.forEach(function (value, key) {
+      if (!String(value).trim()) return;
+      if (key === "website") {
+        trap = String(value);
+        return;
+      }
+      var field = form.querySelector('[name="' + key + '"]');
+      fields.push({
+        label: field && field.dataset.label ? field.dataset.label : key,
+        value: String(value)
+      });
+    });
+
+    return { subject: form.dataset.subject || "Заявка с сайта Makano", fields: fields, website: trap };
+  }
+
+  // Заявка уходит в Telegram через ретранслятор: он хранит токен бота,
+  // которому не место в открытом коде сайта.
+  function sendToRelay(data) {
+    var payload = collect(data);
+
+    if (!payload.fields.length) return;
+
+    setStatus("Отправляем…");
+
+    // Тело — обычная строка без своих заголовков: так браузер шлёт простой
+    // запрос и не требует от ретранслятора обработки preflight.
+    fetch(cfg.relay, { method: "POST", body: JSON.stringify(payload) })
+      .then(function (response) {
+        return response.ok ? response.json() : Promise.reject(new Error("bad status"));
+      })
+      .then(function (result) {
+        if (!result || result.ok !== true) throw new Error("rejected");
+        form.reset();
+        setStatus("Заявка отправлена. Свяжемся с вами в ближайшее время.");
+      })
+      .catch(function () {
+        setStatus(
+          "Не получилось отправить. Напишите нам напрямую: " + (cfg.phoneDisplay || "")
+        );
+      });
+  }
 
   function send(data) {
     setStatus("Отправляем…");
@@ -114,15 +164,14 @@
   // Без бэкенда заявка передаётся мессенджеру готовым текстом — это отвечает
   // ручной модели MVP: заявку всё равно обрабатывает человек.
   function openMessenger(channel, data) {
-    var lines = [form.dataset.subject || "Заявка с сайта Makano"];
-
-    data.forEach(function (value, key) {
-      var field = form.querySelector('[name="' + key + '"]');
-      var title = field && field.dataset.label ? field.dataset.label : key;
-      if (String(value).trim()) lines.push(title + ": " + value);
-    });
-
-    var text = lines.join("\n");
+    var payload = collect(data);
+    var text = [payload.subject]
+      .concat(
+        payload.fields.map(function (field) {
+          return field.label + ": " + field.value;
+        })
+      )
+      .join("\n");
     var url;
     var note;
 

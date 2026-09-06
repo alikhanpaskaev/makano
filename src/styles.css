@@ -554,6 +554,16 @@ form.makano-form {
   border: 1.5px dashed var(--line);
 }
 
+/* Поле-ловушка для спам-ботов: человек его не видит и не может заполнить. */
+.trap {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
 /* Выбор мессенджера: без бэкенда заявка уходит готовым текстом,
    поэтому канал выбирает сам отправитель. */
 .send-choice {

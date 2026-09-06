@@ -11,8 +11,11 @@
   "contactPhone": "+79380046531",
   "contactPhoneDisplay": "+7 938 004-65-31",
   "telegram": "makano_bot",
+  "relayEndpoint": "",
   "formspreeEndpoint": "",
   "launchCity": "Грозный",
   "launchCityIn": "Грозном",
-  "regions": ["Чечня"]
+  "regions": [
+    "Чечня"
+  ]
 }

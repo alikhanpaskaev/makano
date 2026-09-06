@@ -117,6 +117,7 @@ ${footer()}
   phone: site.contactPhone,
   phoneDisplay: site.contactPhoneDisplay,
   telegram: site.telegram,
+  relay: site.relayEndpoint,
   formspree: site.formspreeEndpoint
 })};</script>
 <script src="${p("/app.js")}" defer></script>
@@ -310,8 +311,9 @@ function renderForm({ file, active, title, heading, intro, subject, fields, asid
         </div>`
           )
           .join("\n        ")}
+        <input type="text" name="website" class="trap" tabindex="-1" autocomplete="off" aria-hidden="true">
         ${
-          site.formspreeEndpoint
+          site.relayEndpoint || site.formspreeEndpoint
             ? `<div><button class="btn btn-primary" type="submit">Отправить заявку</button></div>`
             : `<div class="send-choice">
           <span class="send-label">Куда отправить заявку</span>
