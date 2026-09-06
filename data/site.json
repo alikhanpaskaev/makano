@@ -4,6 +4,8 @@
   "description": "Каталог коворкингов и свободных помещений Северного Кавказа. Грозный, Чечня — и дальше по региону.",
   "domain": "makanospace.com",
   "url": "https://makanospace.com",
+  "useCustomDomain": false,
+  "indexable": false,
   "contactPhone": "+79380046531",
   "contactPhoneDisplay": "+7 938 004-65-31",
   "telegram": "",

@@ -88,7 +88,7 @@ const layout = ({ title, description, pathname, body, active, jsonLd = "" }) => 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-<link rel="canonical" href="${esc(site.url + pathname)}">
+${site.indexable ? `<link rel="canonical" href="${esc(site.url + pathname)}">` : `<meta name="robots" content="noindex, nofollow">`}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(site.brand)}">
 <meta property="og:title" content="${esc(title)}">
@@ -372,8 +372,16 @@ ${urls.map((u) => `  <url><loc>${site.url}${u}</loc></url>`).join("\n")}
 `
   );
 
-  write("robots.txt", `User-agent: *\nAllow: /\n\nSitemap: ${site.url}/sitemap.xml\n`);
-  write("CNAME", `${site.domain}\n`);
+  write(
+    "robots.txt",
+    site.indexable
+      ? `User-agent: *\nAllow: /\n\nSitemap: ${site.url}/sitemap.xml\n`
+      : `# Каталог ещё наполняется — до запуска сайт закрыт от поисковиков.\nUser-agent: *\nDisallow: /\n`
+  );
+
+  // CNAME только когда домен реально куплен и направлен на Pages —
+  // иначе GitHub редиректит на неработающий домен и ссылка не открывается.
+  if (site.useCustomDomain) write("CNAME", `${site.domain}\n`);
 }
 
 /* --------------------------------------------------------------------- io */
