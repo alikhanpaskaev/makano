@@ -1,0 +1,74 @@
+[
+  {
+    "id": "tochka-kipeniya-grozny",
+    "name": "Точка кипения",
+    "type": "coworking",
+    "city": "Грозный",
+    "cityIn": "Грозном",
+    "region": "Чечня",
+    "address": "ул. Субры Кишиевой, 33к1",
+    "district": "Ахматовский район",
+    "format": "mixed",
+    "availableHours": "пн–пт 10:00–17:00",
+    "capacity": null,
+    "pricePerHour": null,
+    "priceNote": "Бесплатно для резидентов, по регистрации",
+    "amenities": [
+      "wifi",
+      "meeting_room",
+      "silence_zone"
+    ],
+    "verified": false,
+    "contactPhone": "+7 928 475-54-23",
+    "photos": [],
+    "source": "manual",
+    "about": "Площадка федеральной сети «Точка кипения» при поддержке АСИ. Ориентирована на резидентов, стартапы и образовательные мероприятия."
+  },
+  {
+    "id": "work-zone-grozny",
+    "name": "Work Zone",
+    "type": "coworking",
+    "city": "Грозный",
+    "cityIn": "Грозном",
+    "region": "Чечня",
+    "address": "ул. Умара Димаева, 14, 2 этаж",
+    "district": "",
+    "format": "mixed",
+    "availableHours": "",
+    "capacity": null,
+    "pricePerHour": null,
+    "priceNote": "",
+    "amenities": [
+      "wifi"
+    ],
+    "verified": false,
+    "contactPhone": "",
+    "photos": [],
+    "source": "manual",
+    "about": "Частный коворкинг в центре Грозного."
+  },
+  {
+    "id": "laysa-grozny",
+    "name": "Laysa",
+    "type": "coworking",
+    "city": "Грозный",
+    "cityIn": "Грозном",
+    "region": "Чечня",
+    "address": "пр. В. В. Путина, 5",
+    "district": "Шейх-Мансуровский район",
+    "format": "women_only",
+    "availableHours": "пн–вс 10:00–21:00",
+    "capacity": null,
+    "pricePerHour": null,
+    "priceNote": "",
+    "amenities": [
+      "wifi",
+      "kitchen"
+    ],
+    "verified": false,
+    "contactPhone": "+7 909 261-44-44",
+    "photos": [],
+    "source": "manual",
+    "about": "Женский коворкинг: отдельное пространство для работы и встреч."
+  }
+]
