@@ -554,6 +554,33 @@ form.makano-form {
   border: 1.5px dashed var(--line);
 }
 
+/* Выбор мессенджера: без бэкенда заявка уходит готовым текстом,
+   поэтому канал выбирает сам отправитель. */
+.send-choice {
+  display: grid;
+  gap: 10px;
+  padding-top: 6px;
+  border-top: 1px dashed var(--line);
+}
+
+.send-label {
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  color: var(--ink-soft);
+}
+
+.send-buttons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.send-hint {
+  font-size: 13.5px;
+  color: var(--ink-soft);
+}
+
 .side-note {
   border: 1.5px solid var(--ink);
   background: var(--paper-2);

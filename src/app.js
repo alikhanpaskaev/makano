@@ -79,13 +79,18 @@
 
     if (!form.reportValidity()) return;
 
-    var data = new FormData(form);
+    if (cfg.formspree) send(new FormData(form));
+  });
 
-    if (cfg.formspree) {
-      send(data);
-    } else {
-      openMessenger(data);
-    }
+  // Каждый мессенджер — своя кнопка: человек выбирает, чем ему удобнее.
+  form.querySelectorAll("[data-channel]").forEach(function (button) {
+    button.addEventListener("click", function (event) {
+      event.preventDefault();
+
+      if (!form.reportValidity()) return;
+
+      openMessenger(button.dataset.channel, new FormData(form));
+    });
   });
 
   function send(data) {
@@ -106,22 +111,35 @@
       });
   }
 
-  // Without a form backend the заявка is handed to WhatsApp as a prefilled message —
-  // which matches the manual matching model of the MVP.
-  function openMessenger(data) {
+  // Без бэкенда заявка передаётся мессенджеру готовым текстом — это отвечает
+  // ручной модели MVP: заявку всё равно обрабатывает человек.
+  function openMessenger(channel, data) {
     var lines = [form.dataset.subject || "Заявка с сайта Makano"];
 
     data.forEach(function (value, key) {
-      var label = form.querySelector('[name="' + key + '"]');
-      var title = label && label.dataset.label ? label.dataset.label : key;
+      var field = form.querySelector('[name="' + key + '"]');
+      var title = field && field.dataset.label ? field.dataset.label : key;
       if (String(value).trim()) lines.push(title + ": " + value);
     });
 
-    var phone = (cfg.phone || "").replace(/[^\d]/g, "");
-    var url = "https://wa.me/" + phone + "?text=" + encodeURIComponent(lines.join("\n"));
+    var text = lines.join("\n");
+    var url;
+    var note;
+
+    if (channel === "telegram") {
+      // Токен бота в публичном статическом сайте держать нельзя, поэтому
+      // Telegram получает текст через диалог выбора чата.
+      url = "https://t.me/share/url?url=&text=" + encodeURIComponent(text);
+      note = "Открыли Telegram с готовой заявкой — выберите чат «" +
+        (cfg.telegram ? "@" + cfg.telegram : "Makano") + "» и нажмите «отправить».";
+    } else {
+      url = "https://wa.me/" + (cfg.phone || "").replace(/[^\d]/g, "") +
+        "?text=" + encodeURIComponent(text);
+      note = "Открыли WhatsApp с готовым сообщением — осталось нажать «отправить».";
+    }
 
     window.open(url, "_blank", "noopener");
-    setStatus("Открыли WhatsApp с готовым сообщением — осталось нажать «отправить».");
+    setStatus(note);
   }
 
   function setStatus(text) {

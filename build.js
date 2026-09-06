@@ -116,6 +116,7 @@ ${footer()}
 <script>window.MAKANO=${JSON.stringify({
   phone: site.contactPhone,
   phoneDisplay: site.contactPhoneDisplay,
+  telegram: site.telegram,
   formspree: site.formspreeEndpoint
 })};</script>
 <script src="${p("/app.js")}" defer></script>
@@ -309,9 +310,18 @@ function renderForm({ file, active, title, heading, intro, subject, fields, asid
         </div>`
           )
           .join("\n        ")}
-        <div>
-          <button class="btn btn-primary" type="submit">Отправить заявку</button>
-        </div>
+        ${
+          site.formspreeEndpoint
+            ? `<div><button class="btn btn-primary" type="submit">Отправить заявку</button></div>`
+            : `<div class="send-choice">
+          <span class="send-label">Куда отправить заявку</span>
+          <div class="send-buttons">
+            <button class="btn btn-primary" type="button" data-channel="whatsapp">WhatsApp</button>
+            ${site.telegram ? `<button class="btn" type="button" data-channel="telegram">Telegram</button>` : ""}
+          </div>
+          <span class="send-hint">Откроется мессенджер с готовым текстом — останется нажать «отправить».</span>
+        </div>`
+        }
         <p class="form-status" data-status hidden></p>
       </form>
     </div>
