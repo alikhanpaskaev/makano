@@ -342,7 +342,7 @@ function renderAbout() {
   const body = `
   <main class="wrap prose">
     <h1>О проекте</h1>
-    <p>${esc(site.brand)} — каталог рабочих мест ${esc(site.launchCity)}а и, дальше, всего региона.
+    <p>${esc(site.brand)} — каталог рабочих мест ${esc(site.launchCityOf)} и, дальше, всего региона.
       Мы собираем в одном месте то, что сейчас разбросано по картам, чатам и сарафанному радио:
       где можно сесть и поработать, сколько это стоит, в какие часы открыто.</p>
 
@@ -372,7 +372,7 @@ function renderAbout() {
 
   write("about/index.html", layout({
     title: `О проекте — ${site.brand}`,
-    description: `${site.brand}: как устроен каталог рабочих мест ${site.launchCity}а и что получают партнёры.`,
+    description: `${site.brand}: как устроен каталог рабочих мест ${site.launchCityOf} и что получают партнёры.`,
     pathname: "/about/",
     active: "about",
     body
