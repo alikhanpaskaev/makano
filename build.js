@@ -422,11 +422,11 @@ function build() {
   renderForm({
     file: "rent-desk/index.html",
     active: "rent",
-    title: `Найти рабочее место в ${site.launchCity}е — ${site.brand}`,
+    title: `Найти рабочее место в ${site.launchCityIn} — ${site.brand}`,
     heading: "Найдём вам<br>рабочее место",
-    intro: `Опишите, что нужно — подберём площадку в ${esc(site.launchCity)}е и договоримся об условиях. Бесплатно.`,
+    intro: `Опишите, что нужно — подберём площадку в ${esc(site.launchCityIn)} и договоримся об условиях. Бесплатно.`,
     subject: "Заявка: ищу рабочее место",
-    meta: `Оставьте заявку — подберём коворкинг или рабочее место в ${site.launchCity}е под ваши задачи.`,
+    meta: `Оставьте заявку — подберём коворкинг или рабочее место в ${site.launchCityIn} под ваши задачи.`,
     fields: [
       { name: "name", label: "Как вас зовут", required: true },
       { name: "phone", label: "Телефон или ник в Telegram", required: true, placeholder: "+7 ..." },
