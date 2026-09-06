@@ -5,6 +5,8 @@
   "domain": "makanospace.com",
   "url": "https://makanospace.com",
   "useCustomDomain": false,
+  "previewUrl": "https://alikhanpaskaev.github.io/makano",
+  "basePath": "/makano",
   "indexable": false,
   "contactPhone": "+79380046531",
   "contactPhoneDisplay": "+7 938 004-65-31",

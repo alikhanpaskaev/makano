@@ -36,6 +36,13 @@ const AMENITY_LABEL = {
 
 /* ----------------------------------------------------------------- helpers */
 
+// На своём домене сайт живёт в корне, на GitHub Pages — в подпапке /<repo>/.
+// Все внутренние ссылки строятся через p(), иначе на Pages они уходят
+// в корень домена и отдают 404.
+const BASE = site.useCustomDomain ? "" : site.basePath || "";
+const SITE_URL = site.useCustomDomain ? site.url : site.previewUrl || site.url;
+const p = (rel) => BASE + rel;
+
 const esc = (value) =>
   String(value == null ? "" : value)
     .replace(/&/g, "&amp;")
@@ -57,12 +64,12 @@ const mapUrl = (space) =>
 const header = (active) => `
   <header class="site-header">
     <div class="wrap">
-      <a class="wordmark" href="/">Maka<span>no</span></a>
+      <a class="wordmark" href="${p("/")}">Maka<span>no</span></a>
       <nav class="site-nav">
-        <a href="/"${active === "index" ? ' aria-current="page"' : ""}>Площадки</a>
-        <a href="/about/"${active === "about" ? ' aria-current="page"' : ""}>О проекте</a>
-        <a href="/rent-desk/"${active === "rent" ? ' aria-current="page"' : ""}>Найти место</a>
-        <a class="btn btn-primary" href="/partner-apply/">Сдать помещение</a>
+        <a href="${p("/")}"${active === "index" ? ' aria-current="page"' : ""}>Площадки</a>
+        <a href="${p("/about/")}"${active === "about" ? ' aria-current="page"' : ""}>О проекте</a>
+        <a href="${p("/rent-desk/")}"${active === "rent" ? ' aria-current="page"' : ""}>Найти место</a>
+        <a class="btn btn-primary" href="${p("/partner-apply/")}">Сдать помещение</a>
       </nav>
     </div>
   </header>`;
@@ -75,8 +82,8 @@ const footer = () => `
       </div>
       <div>
         <a href="tel:${esc(site.contactPhone)}">${esc(site.contactPhoneDisplay)}</a> ·
-        <a href="/partner-apply/">Стать партнёром</a> ·
-        <a href="/about/">О проекте</a>
+        <a href="${p("/partner-apply/")}">Стать партнёром</a> ·
+        <a href="${p("/about/")}">О проекте</a>
       </div>
     </div>
   </footer>`;
@@ -88,17 +95,17 @@ const layout = ({ title, description, pathname, body, active, jsonLd = "" }) => 
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(description)}">
-${site.indexable ? `<link rel="canonical" href="${esc(site.url + pathname)}">` : `<meta name="robots" content="noindex, nofollow">`}
+${site.indexable ? `<link rel="canonical" href="${esc(SITE_URL + pathname)}">` : `<meta name="robots" content="noindex, nofollow">`}
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="${esc(site.brand)}">
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(description)}">
-<meta property="og:url" content="${esc(site.url + pathname)}">
+<meta property="og:url" content="${esc(SITE_URL + pathname)}">
 <meta property="og:locale" content="ru_RU">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;700&family=Golos+Text:wght@400;500;600&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="/styles.css">
+<link rel="stylesheet" href="${p("/styles.css")}">
 ${jsonLd}
 </head>
 <body>
@@ -111,7 +118,7 @@ ${footer()}
   phoneDisplay: site.contactPhoneDisplay,
   formspree: site.formspreeEndpoint
 })};</script>
-<script src="/app.js" defer></script>
+<script src="${p("/app.js")}" defer></script>
 </body>
 </html>
 `;
@@ -126,7 +133,7 @@ const card = (space, index) => {
   ].join("");
 
   return `
-      <a class="card" href="/space/${esc(space.id)}/"
+      <a class="card" href="${p("/space/" + esc(space.id) + "/")}"
          data-space
          data-city="${esc(space.city)}"
          data-type="${esc(space.type)}"
@@ -167,7 +174,7 @@ function renderIndex() {
           условия. Нашли подходящее — оставляете заявку, мы связываем вас с площадкой.</p>
         <div class="hero-actions">
           <a class="btn btn-primary" href="#catalogue">Смотреть площадки</a>
-          <a class="btn" href="/partner-apply/">У меня есть помещение</a>
+          <a class="btn" href="${p("/partner-apply/")}">У меня есть помещение</a>
         </div>
       </div>
       <aside class="hero-panel">
@@ -194,7 +201,7 @@ ${spaces.map(card).join("\n")}
 
       <div class="empty-note" data-empty hidden>
         По этим фильтрам ничего не нашлось. Снимите часть условий —
-        или <a href="/rent-desk/">оставьте заявку</a>, подберём вручную.
+        или <a href="${p("/rent-desk/")}">оставьте заявку</a>, подберём вручную.
       </div>
     </section>
 
@@ -205,7 +212,7 @@ ${spaces.map(card).join("\n")}
         <p>Языковой центр, студия, учебный класс, свободный кабинет — если помещение пустует
           часть дня, оно может приносить доход как рабочее пространство. Мы приводим людей,
           помогаем с условиями, а дальше — с обустройством площадки.</p>
-        <a class="btn" href="/partner-apply/">Оставить заявку</a>
+        <a class="btn" href="${p("/partner-apply/")}">Оставить заявку</a>
       </div>
     </section>
   </main>`;
@@ -232,7 +239,7 @@ function renderSpace(space) {
       addressCountry: "RU"
     },
     telephone: space.contactPhone || undefined,
-    url: `${site.url}/space/${space.id}/`
+    url: `${SITE_URL}/space/${space.id}/`
   })}</script>`;
 
   const fact = (label, value) =>
@@ -240,7 +247,7 @@ function renderSpace(space) {
 
   const body = `
   <main class="wrap">
-    <a class="back-link" href="/">← Все площадки</a>
+    <a class="back-link" href="${p("/")}">← Все площадки</a>
 
     <div class="detail-head">
       <h1>${esc(space.name)}</h1>
@@ -260,7 +267,7 @@ function renderSpace(space) {
           : `<div class="notice">Данные собраны из открытых источников и ещё не подтверждены площадкой.
              Перед поездкой уточните условия — или оставьте заявку, мы проверим за вас.</div>`}
 
-        <a class="btn btn-primary" href="/rent-desk/?space=${encodeURIComponent(space.name)}">Оставить заявку на место</a>
+        <a class="btn btn-primary" href="${p("/rent-desk/?space=" + encodeURIComponent(space.name))}">Оставить заявку на место</a>
       </div>
 
       <dl class="facts">
@@ -345,7 +352,7 @@ function renderAbout() {
     <p>Если у вас есть помещение с окнами простоя — мы приводим людей и помогаем выстроить
       формат: часы, условия, цену. Для площадок с подтверждённым спросом — помощь
       с обустройством: мебель, техника, всё, что нужно для нормальной работы.</p>
-    <p><a href="/partner-apply/">Оставить заявку партнёра →</a></p>
+    <p><a href="${p("/partner-apply/")}">Оставить заявку партнёра →</a></p>
 
     <h2>Контакты</h2>
     <p><a href="tel:${esc(site.contactPhone)}">${esc(site.contactPhoneDisplay)}</a></p>
@@ -367,7 +374,7 @@ function renderSitemap() {
     "sitemap.xml",
     `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-${urls.map((u) => `  <url><loc>${site.url}${u}</loc></url>`).join("\n")}
+${urls.map((u) => `  <url><loc>${SITE_URL}${u}</loc></url>`).join("\n")}
 </urlset>
 `
   );
@@ -375,7 +382,7 @@ ${urls.map((u) => `  <url><loc>${site.url}${u}</loc></url>`).join("\n")}
   write(
     "robots.txt",
     site.indexable
-      ? `User-agent: *\nAllow: /\n\nSitemap: ${site.url}/sitemap.xml\n`
+      ? `User-agent: *\nAllow: /\n\nSitemap: ${SITE_URL}/sitemap.xml\n`
       : `# Каталог ещё наполняется — до запуска сайт закрыт от поисковиков.\nUser-agent: *\nDisallow: /\n`
   );
 
