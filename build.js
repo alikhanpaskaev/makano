@@ -88,7 +88,7 @@ const footer = () => `
     </div>
   </footer>`;
 
-const layout = ({ title, description, pathname, body, active, jsonLd = "" }) => `<!doctype html>
+const layout = ({ title, description, pathname, body, active, jsonLd = "", extraScripts = "" }) => `<!doctype html>
 <html lang="ru">
 <head>
 <meta charset="utf-8">
@@ -121,6 +121,7 @@ ${footer()}
   formspree: site.formspreeEndpoint
 })};</script>
 <script src="${p("/app.js")}" defer></script>
+${extraScripts}
 </body>
 </html>
 `;
@@ -169,8 +170,11 @@ function renderIndex() {
 
   const body = `
   <main>
-    <section class="wrap hero">
-      <div>
+    <section class="hero-stage">
+      <canvas id="hero-field" class="hero-field" aria-hidden="true"></canvas>
+      <div class="wrap hero">
+      <div class="hero-copy">
+        <span class="hero-eyebrow">${esc(site.launchCity)} · ${esc(site.regions[0] || "")}</span>
         <h1>Рабочее место<br>в <em>${esc(site.launchCityIn)}</em> —<br>на час, день или месяц.</h1>
         <p class="lede">Коворкинги и свободные помещения города в одном каталоге: адреса, часы,
           условия. Нашли подходящее — оставляете заявку, мы связываем вас с площадкой.</p>
@@ -185,6 +189,7 @@ function renderIndex() {
         <div class="stat"><b>${new Set(spaces.map((s) => s.city)).size}</b><span>город на старте</span></div>
         <div class="stat"><b>0₽</b><span>для тех, кто ищет место</span></div>
       </aside>
+      </div>
     </section>
 
     <section class="wrap section" id="catalogue">
@@ -224,7 +229,8 @@ ${spaces.map(card).join("\n")}
     description: site.description,
     pathname: "/",
     active: "index",
-    body
+    body,
+    extraScripts: `<script src="${p("/hero-field.js")}" defer></script>`
   }));
 }
 
@@ -476,7 +482,7 @@ function build() {
 
   renderSitemap();
 
-  for (const asset of ["styles.css", "app.js"]) {
+  for (const asset of ["styles.css", "app.js", "hero-field.js"]) {
     fs.copyFileSync(path.join(ROOT, "src", asset), path.join(DIST, asset));
   }
 
