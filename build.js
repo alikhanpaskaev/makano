@@ -142,7 +142,7 @@ const card = (space, index) => {
          data-type="${esc(space.type)}"
          data-format="${esc(space.format)}"
          data-amenity="${esc(space.amenities.join("|"))}">
-        <span class="idx">${String(index + 1).padStart(2, "0")}</span>
+        <span class="idx" aria-hidden="true">${String(index + 1).padStart(2, "0")}</span>
         <h3>${esc(space.name)}</h3>
         <p class="addr">${esc(space.city)}, ${esc(space.address)}</p>
         <p class="price">${esc(priceLabel(space))}</p>
@@ -313,7 +313,7 @@ function renderForm({ file, active, title, heading, intro, subject, fields, asid
           <label for="${f.name}">${esc(f.label)}</label>
           ${f.type === "textarea"
             ? `<textarea id="${f.name}" name="${f.name}" data-label="${esc(f.label)}" placeholder="${esc(f.placeholder || "")}"${f.required ? " required" : ""}></textarea>`
-            : `<input id="${f.name}" name="${f.name}" type="${f.type || "text"}" data-label="${esc(f.label)}" placeholder="${esc(f.placeholder || "")}"${f.required ? " required" : ""}>`}
+            : `<input id="${f.name}" name="${f.name}" type="${f.type || "text"}"${f.inputmode ? ` inputmode="${f.inputmode}"` : ""}${f.autocomplete ? ` autocomplete="${f.autocomplete}"` : ""} data-label="${esc(f.label)}" placeholder="${esc(f.placeholder || "")}"${f.required ? " required" : ""}>`}
         </div>`
           )
           .join("\n        ")}
@@ -330,7 +330,7 @@ function renderForm({ file, active, title, heading, intro, subject, fields, asid
           <span class="send-hint">Откроется мессенджер с готовым текстом — останется нажать «отправить».</span>
         </div>`
         }
-        <p class="form-status" data-status hidden></p>
+        <p class="form-status" data-status role="status" aria-live="polite" hidden></p>
       </form>
     </div>
 
@@ -434,8 +434,9 @@ function build() {
     subject: "Заявка: ищу рабочее место",
     meta: `Оставьте заявку — подберём коворкинг или рабочее место в ${site.launchCityIn} под ваши задачи.`,
     fields: [
-      { name: "name", label: "Как вас зовут", required: true },
-      { name: "phone", label: "Телефон или ник в Telegram", required: true, placeholder: "+7 ..." },
+      { name: "name", label: "Как вас зовут", required: true, autocomplete: "name" },
+      // Не inputmode=tel: поле принимает и ник в Telegram, цифровая клавиатура помешает.
+      { name: "phone", label: "Телефон или ник в Telegram", required: true, placeholder: "+7 ...", autocomplete: "tel" },
       { name: "space", label: "Интересующая площадка", placeholder: "Если уже выбрали" },
       { name: "when", label: "Когда и на сколько", placeholder: "Например: будни, 10:00–15:00" },
       { name: "comment", label: "Что важно", type: "textarea", placeholder: "Тихо, переговорная, рядом с центром…" }
@@ -461,10 +462,10 @@ function build() {
     subject: "Заявка партнёра: сдать помещение",
     meta: "Сдавайте простаивающее помещение под рабочие места: мы приводим людей и помогаем с обустройством.",
     fields: [
-      { name: "name", label: "Ваше имя", required: true },
-      { name: "business", label: "Название и тип бизнеса", required: true, placeholder: "Языковой центр «…»" },
-      { name: "phone", label: "Телефон или Telegram", required: true, placeholder: "+7 ..." },
-      { name: "address", label: "Адрес помещения", required: true },
+      { name: "name", label: "Ваше имя", required: true, autocomplete: "name" },
+      { name: "business", label: "Название и тип бизнеса", required: true, placeholder: "Языковой центр «…»", autocomplete: "organization" },
+      { name: "phone", label: "Телефон или Telegram", required: true, placeholder: "+7 ...", autocomplete: "tel" },
+      { name: "address", label: "Адрес помещения", required: true, autocomplete: "street-address" },
       { name: "free_hours", label: "Свободные часы", placeholder: "Например: будни, 9:00–16:00" },
       { name: "capacity", label: "Сколько человек помещается", placeholder: "Например: 8" },
       { name: "equipment", label: "Что уже есть", type: "textarea", placeholder: "Wi-Fi, столы, доска, кухня…" }

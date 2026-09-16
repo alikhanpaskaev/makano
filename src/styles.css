@@ -46,6 +46,19 @@ a {
   text-underline-offset: 3px;
 }
 
+/* Фокус с клавиатуры: одно кольцо на всех интерактивных элементах.
+   :focus-visible — только для клавиатуры, мышь кольцо не показывает. */
+:focus-visible {
+  outline: 3px solid var(--clay);
+  outline-offset: 3px;
+}
+
+/* Тёмные поверхности: кольцо цвета бумаги, иначе глина сливается с мхом. */
+.cta-block :focus-visible,
+.chip[aria-pressed="true"]:focus-visible {
+  outline-color: var(--paper);
+}
+
 .wrap {
   width: min(1120px, 92vw);
   margin: 0 auto;
@@ -103,6 +116,9 @@ a {
 .site-nav a {
   color: var(--ink-soft);
   text-decoration: none;
+  /* Зона нажатия ≥44px при мелком тексте: добираем отступами, не шрифтом. */
+  padding: 12px 4px;
+  margin: -12px -4px;
 }
 
 .site-nav a:hover {
@@ -314,7 +330,8 @@ a {
 .chip {
   font-family: var(--font-body);
   font-size: 14px;
-  padding: 8px 16px;
+  padding: 10px 16px;
+  min-height: 44px;
   border: 1.5px solid var(--line);
   background: transparent;
   color: var(--ink-soft);
@@ -361,6 +378,7 @@ a {
   background: var(--paper);
 }
 
+/* Декоративный номер: контраст намеренно низкий, поэтому в разметке aria-hidden. */
 .card .idx {
   position: absolute;
   top: 18px;
@@ -482,6 +500,7 @@ a {
 .back-link {
   display: inline-block;
   margin: 34px 0 10px;
+  padding: 11px 0;
   font-size: 14px;
   color: var(--ink-soft);
   text-decoration: none;
@@ -791,7 +810,7 @@ form.makano-form {
   }
 
   .site-nav .btn {
-    padding: 8px 12px;
+    padding: 11px 12px;
     font-size: 12px;
   }
 
@@ -799,5 +818,31 @@ form.makano-form {
   .cta-block .btn {
     width: 100%;
     text-align: center;
+  }
+}
+
+/* --- Reduced motion ------------------------------------------------------ */
+
+/* Холст героя проверяет это сам в JS; здесь — всё остальное.
+   Карточки не оставляем на opacity:0 — снимаем анимацию и показываем сразу. */
+@media (prefers-reduced-motion: reduce) {
+  .card {
+    animation: none;
+    opacity: 1;
+  }
+
+  .card:hover,
+  .btn:hover {
+    transform: none;
+  }
+
+  .hero-field {
+    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
   }
 }
